@@ -16,7 +16,8 @@ const posts = [
     content: 'ZIP code xxxxxx, need assistance, contact: 123-456-8901',
     type: 'Need-emergency',
     tags: ['food', 'Emergency'],
-    location: 'San Jose'
+    location: 'San Jose',
+    category: 'community'
   },
   {
     id: 2,
@@ -24,7 +25,8 @@ const posts = [
     content: 'ZIP code xxxxxx, one wheelchair available, contact: 123-456-789',
     type: 'offer',
     tags: ['necessities', 'Regular'],
-    location: 'San Jose'
+    location: 'San Jose',
+    category: 'community'
   },
   {
     id: 3,
@@ -32,7 +34,8 @@ const posts = [
     content: 'Offering non-perishable food items. ZIP code xxxxxx. Contact: 345-678-9012',
     type: 'offer',
     tags: ['food', 'Regular'],
-    location: 'San Jose'
+    location: 'San Jose',
+    category: 'community'
   },
   {
     id: 4,
@@ -40,7 +43,8 @@ const posts = [
     content: 'In need of bandages, antiseptics. ZIP code xxxxxx. Contact: 456-789-0123',
     type: 'Need-emergency',
     tags: ['medical', 'Emergency'],
-    location: 'San Jose'
+    location: 'San Jose',
+    category: 'community'
   },
   {
     id: 5,
@@ -48,7 +52,8 @@ const posts = [
     content: 'Need diapers and baby formula. ZIP code xxxxxx. Contact: 678-901-2345',
     type: 'Need-emergency',
     tags: ['baby care', 'Emergency'],
-    location: 'San Jose'
+    location: 'San Jose',
+    category: 'community'
   },
   {
     id: 6,
@@ -56,7 +61,8 @@ const posts = [
     content: 'Offering carpool service in area xxxxxx. Contact: 789-012-3456',
     type: 'offer',
     tags: ['transportation', 'Regular'],
-    location: 'San Jose'
+    location: 'San Jose',
+    category: 'community'
   },
   {
     id: 7,
@@ -64,7 +70,8 @@ const posts = [
     content: 'Urgently need temporary shelter. ZIP code xxxxxx. Contact: 890-123-4567',
     type: 'Need-regular',
     tags: ['housing'],
-    location: 'San Jose'
+    location: 'San Jose',
+    category: 'community'
   },
   {
     id: 8,
@@ -72,7 +79,8 @@ const posts = [
     content: 'Need relief supplies like blankets and canned food. ZIP code xxxxxx. Contact: 901-234-5678',
     type: 'Need-emergency',
     tags: ['relief', 'Emergency'],
-    location: 'North Carolina'
+    location: 'North Carolina',
+    category: 'community'
   },
   {
     id: 9,
@@ -80,7 +88,8 @@ const posts = [
     content: 'Available used furniture for those affected by recent storms. ZIP code xxxxxx. Contact: 123-456-7890',
     type: 'offer',
     tags: ['furniture', 'Assistance'],
-    location: 'North Carolina'
+    location: 'North Carolina',
+    category: 'community'
   },
   {
     id: 10,
@@ -88,7 +97,7 @@ const posts = [
     content: 'Need temporary shelter for pets during house repairs. ZIP code xxxxxx. Contact: 234-567-8901',
     type: 'Need-regular',
     tags: ['pet care', 'Assistance'],
-    location: 'North Carolina'
+    location: 'North Carolina',
   },
   {
     id: 11,
@@ -96,7 +105,8 @@ const posts = [
     content: 'Requesting blood donations for local hospital patients. ZIP code xxxxxx. Contact: 345-678-9012',
     type: 'Need-emergency',
     tags: ['medical', 'Emergency'],
-    location: 'North Carolina'
+    location: 'North Carolina',
+    category: 'community'
   },
   {
     id: 12,
@@ -104,8 +114,18 @@ const posts = [
     content: 'Free child care for families affected by recent events. ZIP code xxxxxx. Contact: 456-789-0123',
     type: 'offer',
     tags: ['child care', 'Support'],
-    location: 'North Carolina'
-  }
+    location: 'North Carolina',
+    category: 'community'
+  },
+  {
+    id: 1,
+    title: 'Need assist on purified water for a family',
+    content: 'ZIP code xxxxxx, need assistance, contact: 123-456-8901',
+    type: 'Need-emergency',
+    tags: ['food', 'Emergency'],
+    location: 'San Jose',
+    category: 'official' 
+  },
 ];
 
 
@@ -135,8 +155,6 @@ app.post('/api/login', (req, res) => {
     res.status(401).json({ message: 'Invalid username or password' });
   }
 });
-
-
 
 // 注册接口
 app.post('/api/register', (req, res) => {
@@ -173,7 +191,8 @@ app.get('/api/posts', (req, res) => {
 
 // 添加新帖子
 app.post('/api/posts', (req, res) => {
-  const newPost = { ...req.body, id: posts.length + 1 };
+  const { title, content, type, tags, image, location, category } = req.body;
+  const newPost = { id: Date.now(), title, content, type, tags, image, location, category };
   posts.push(newPost);
   res.json(newPost);
 });
@@ -184,3 +203,4 @@ const PORT = process.env.PORT || 12000;
 app.listen(PORT, () => {
   console.log(`服务器运行在端口 ${PORT}`);
 });
+
