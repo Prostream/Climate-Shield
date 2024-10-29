@@ -179,7 +179,7 @@ app.post('/api/posts', (req, res) => {
 });
 
 // 设置服务器端口
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 12000;
 
 app.listen(PORT, () => {
   console.log(`服务器运行在端口 ${PORT}`);
