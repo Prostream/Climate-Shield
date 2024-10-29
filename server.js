@@ -118,14 +118,43 @@ const posts = [
     category: 'community'
   },
   {
-    id: 1,
-    title: 'Need assist on purified water for a family',
-    content: 'ZIP code xxxxxx, need assistance, contact: 123-456-8901',
+    id: 13,
+    title: 'Request Assistance for Cultural Heritage Preservation in San Jose',
+    content: 'Looking for resources to help preserve cultural heritage sites in San Jose. If you have expertise or resources in historical preservation, please reach out to us.',
     type: 'Need-emergency',
-    tags: ['food', 'Emergency'],
+    tags: ['cultural heritage', 'preservation', 'San Jose'],
     location: 'San Jose',
-    category: 'official' 
+    category: 'official'
   },
+  {
+    id: 14,
+    title: 'Long-term Provision of Water and Food by City Government',
+    content: 'The city government of San Jose is providing long-term access to clean water and food supplies for residents in need. For more information on distribution locations and schedules, please contact the city helpline at 123-456-7890.',
+    type: 'offer',
+    tags: ['water', 'food', 'long-term assistance', 'San Jose'],
+    location: 'San Jose',
+    category: 'official'
+  },
+  {
+    id: 15,
+    title: 'National Emergency Response Agency Medical Aid Center in Santa Clara',
+    content: 'The National Emergency Response Agency has set up a medical aid center in Santa Clara, providing free medications for conditions such as heart disease, asthma, and depression. Residents can visit the center for assistance or call 123-456-7890 for more information.',
+    type: 'offer',
+    tags: ['medical aid', 'free medication', 'heart disease', 'asthma', 'depression'],
+    location: 'San Jose',
+    category: 'official'
+  },
+  {
+    id: 16,
+    title: 'Long-term Provision of Water and Food by City Government',
+    content: 'The city government of San Jose is providing long-term access to clean water and food supplies for residents in need. For more information on distribution locations and schedules, please contact the city helpline at 123-456-7890.',
+    type: 'offer',
+    tags: ['water', 'food', 'long-term assistance', 'North Carolina'],
+    location: 'North Carolina',
+    category: 'official'
+  },
+
+
 ];
 
 
