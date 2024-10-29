@@ -8,6 +8,60 @@ const users = [
   { username: '999', password: '1234', email: 'user2@example.com', phoneNumber: '0987654321' },
 ];
 
+// 模拟数据库的帖子数组
+const posts = [
+  {
+    id: 1,
+    title: 'Need assist on purified water for a family',
+    content: 'ZIP code xxxxxx, need assistance, contact: 123-456-8901',
+    type: 'Need-emergency',
+    tags: ['food', 'Emergency']
+  },
+  {
+    id: 2,
+    title: 'Wheelchair available for assistance',
+    content: 'ZIP code xxxxxx, one wheelchair available, contact: 123-456-789',
+    type: 'offer',
+    tags: ['necessities', 'Regular']
+  },
+  {
+    id: 4,
+    title: 'Food packages available for donation',
+    content: 'Offering non-perishable food items. ZIP code xxxxxx. Contact: 345-678-9012',
+    type: 'offer',
+    tags: ['food', 'Regular']
+  },
+  {
+    id: 5,
+    title: 'Urgent medical supplies needed',
+    content: 'In need of bandages, antiseptics. ZIP code xxxxxx. Contact: 456-789-0123',
+    type: 'Need-emergency',
+    tags: ['medical', 'Emergency']
+  },
+  {
+    id: 7,
+    title: 'Urgent request for baby supplies',
+    content: 'Need diapers and baby formula. ZIP code xxxxxx. Contact: 678-901-2345',
+    type: 'Need-emergency',
+    tags: ['baby care', 'Emergency']
+  },
+  {
+    id: 8,
+    title: 'Available carpool for school pick-ups',
+    content: 'Offering carpool service in area xxxxxx. Contact: 789-012-3456',
+    type: 'offer',
+    tags: ['transportation', 'Regular']
+  },
+  {
+    id: 9,
+    title: 'Seeking support for temporary shelter',
+    content: 'Urgently need temporary shelter. ZIP code xxxxxx. Contact: 890-123-4567',
+    type: 'Need-regular',
+    tags: ['housing']
+  }
+];
+
+
 // 中间件配置
 app.use(cors());
 app.use(express.json());
@@ -62,6 +116,18 @@ app.post('/api/register', (req, res) => {
   users.push(newUser);
   
   res.status(200).json({ message: 'Registration successful', user: newUser });
+});
+
+// 获取所有帖子
+app.get('/api/posts', (req, res) => {
+  res.json(posts);
+});
+
+// 添加新帖子
+app.post('/api/posts', (req, res) => {
+  const newPost = { ...req.body, id: posts.length + 1 };
+  posts.push(newPost);
+  res.json(newPost);
 });
 
 // 设置服务器端口
