@@ -2,11 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-// 随机生成一些用户数据存放在数组中
+// 用于模拟的用户数据库
 const users = [
-  { username: '1', password: '1' },
-  { username: '999', password: '1234' },
-  { username: 'HaoyangTan', password: '2233' },
+  { username: 'HaoyangTan', password: '2233', email: 'jeff.tandev@gmail.com', phoneNumber: '7187914228' },
+  { username: '999', password: '1234', email: 'user2@example.com', phoneNumber: '0987654321' },
 ];
 
 // 中间件配置
@@ -33,6 +32,36 @@ app.post('/api/login', (req, res) => {
   } else {
     res.status(401).json({ message: 'Invalid username or password' });
   }
+});
+
+
+
+// 注册接口
+app.post('/api/register', (req, res) => {
+  const { username, password, email, phoneNumber, gender, birthday, address, postalCode } = req.body;
+
+  // 检查用户名或邮箱是否已经存在
+  const existingUser = users.find(user => user.username === username || user.email === email);
+  
+  if (existingUser) {
+    return res.status(400).json({ message: 'Username or email already exists' });
+  }
+
+  // 创建新用户并添加到用户数组中
+  const newUser = {
+    username,
+    password,
+    email,
+    phoneNumber,
+    gender,
+    birthday,
+    address,
+    postalCode,
+  };
+  
+  users.push(newUser);
+  
+  res.status(200).json({ message: 'Registration successful', user: newUser });
 });
 
 // 设置服务器端口
