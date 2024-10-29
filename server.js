@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const app = express();
+
+
 
 // 用于模拟的用户数据库
 const users = [
@@ -162,9 +165,12 @@ const posts = [
 // 中间件配置
 app.use(cors());
 app.use(express.json());
+// 静态文件托管
+app.use(express.static(path.join(__dirname, 'build')));
 
 // 测试路由
 // 路由示例
+
 app.get('/', (req, res) => {
     res.send('Hello from Express!');
   });
@@ -224,6 +230,10 @@ app.post('/api/posts', (req, res) => {
   const newPost = { id: Date.now(), title, content, type, tags, image, location, category };
   posts.push(newPost);
   res.json(newPost);
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 // 设置服务器端口
