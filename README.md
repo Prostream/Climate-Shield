@@ -20,8 +20,10 @@ Prerequisites
 
 Clone from Github (bash)
 - Git clone https://github.com/Prostream/front_hackthon.git
+
 Start server on local (open bash from path that clone from Github)
 - node server.js 
+
 Access
 - Open browser and go https://Localhost:12000 (should auto start after last step)
 
