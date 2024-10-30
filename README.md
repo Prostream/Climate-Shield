@@ -25,7 +25,7 @@ Start server on local (open bash from path that clone from Github)
 - node server.js 
 
 Access
-- Open browser and go https://Localhost:12000 (should auto start after last step)
+- Open browser and go https://Localhost:12000 
 
 Reference
 - OpenWeatherMap.org. (n.d.). Interactive weather maps - OpenWeatherMap. https://openweathermap.org/weathermap?    
