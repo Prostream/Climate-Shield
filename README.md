@@ -30,3 +30,7 @@ Access
 Reference
 - OpenWeatherMap.org. (n.d.). Interactive weather maps - OpenWeatherMap. https://openweathermap.org/weathermap?    
   basemap=map&cities=true&layer=$%7BmapLayer%7D&lat=30&lon=0&zoom=2
+- NOAA/NWS Storm Prediction Center. (n.d.). https://www.spc.noaa.gov/
+- Fire information. (n.d.). https://www.nifc.gov/fire-information
+- Earthquake Hazards Program | U.S. Geological Survey. (2024, October 15). https://www.usgs.gov/programs/earthquake-hazards
+- National Water Prediction Service - NOAA. (n.d.). https://water.weather.gov/ahps/
