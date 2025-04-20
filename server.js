@@ -75,6 +75,16 @@ app.post('/api/posts', (req, res) => {
   res.json(newPost);
 });
 
+// 搜索帖子接口
+app.get('/api/posts/search', (req, res) => {
+  const query = req.query.query || '';
+  console.log('用户输入的内容:', query);
+  res.json({
+    success: true,
+    data: query
+  });
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
