@@ -112,7 +112,9 @@ app.get('/api/vector', (req, res) => {
   const query = req.query.query || '';
   console.log('🟢 收到关键词:', query);
 
-  const python = spawn('python3', ['vector_search.py', query]);
+  // 根据操作系统选择 Python 命令
+  const pythonCommand = process.platform === 'win32' ? 'python' : 'python3';
+  const python = spawn(pythonCommand, ['vector_search.py', query]);
 
   let result = '';
 
