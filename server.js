@@ -4,6 +4,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const Post = require('./models/Post');
 const User = require('./models/User');
+const { spawn } = require('child_process');
 
 const app = express();
 
@@ -106,18 +107,48 @@ app.post('/api/posts', async (req, res) => {
   }
 });
 
-// ✅ 搜索帖子（这里只是模拟返回输入内容）
-app.get('/api/posts/search', (req, res) => {
+// ✅ 搜索帖子
+app.get('/api/vector', (req, res) => {
   const query = req.query.query || '';
-  console.log('搜索内容:', query);
-  res.json({
-    success: true,
-    data: query
+  console.log('🟢 收到关键词:', query);
+
+  const python = spawn('python3', ['vector_search.py', query]);
+
+  let result = '';
+
+  // ✅ 收集输出内容
+  python.stdout.on('data', (data) => {
+    result += data.toString();
+  });
+
+  // ✅ 打印 Python 错误输出
+  python.stderr.on('data', (data) => {
+    console.error('[Python stderr]:', data.toString());
+  });
+
+  python.on('close', (code) => {
+    if (!result || result.trim().length === 0) {
+      console.error('❌ Python 没有返回任何内容');
+      return res.status(500).json({ success: false, message: 'Python 无输出或出错' });
+    }
+
+    try {
+      const vector = JSON.parse(result);
+      console.log('✅ 成功获取词向量（前5维）:', vector.slice(0, 5));
+      res.json({ success: true, vector });
+    } catch (err) {
+      console.error('❌ JSON 解析失败:', err);
+      res.status(500).json({ success: false, message: 'JSON 解析失败' });
+    }
   });
 });
 
+// ✅ 静态资源托管路径
+app.use(express.static(path.join(__dirname, 'Client/build')));
+
+// ✅ 放在最后的 catch-all，确保路径正确
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'Client/build', 'index.html'));
 });
 
 // 设置服务器端口
