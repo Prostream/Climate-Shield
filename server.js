@@ -4,6 +4,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const Post = require('./models/Post');
 const User = require('./models/User');
+const PostVec = require('./models/PostVec');
 const { spawn } = require('child_process');
 
 const app = express();
@@ -107,8 +108,16 @@ app.post('/api/posts', async (req, res) => {
   }
 });
 
+// 添加计算余弦相似度的函数
+function cosineSimilarity(vec1, vec2) {
+  const dotProduct = vec1.reduce((sum, val, i) => sum + val * vec2[i], 0);
+  const norm1 = Math.sqrt(vec1.reduce((sum, val) => sum + val * val, 0));
+  const norm2 = Math.sqrt(vec2.reduce((sum, val) => sum + val * val, 0));
+  return dotProduct / (norm1 * norm2);
+}
+
 // ✅ 搜索帖子
-app.get('/api/vector', (req, res) => {
+app.get('/api/vector', async (req, res) => {
   const query = req.query.query || '';
   console.log('🟢 收到关键词:', query);
 
@@ -128,16 +137,36 @@ app.get('/api/vector', (req, res) => {
     console.error('[Python stderr]:', data.toString());
   });
 
-  python.on('close', (code) => {
+  python.on('close', async (code) => {
     if (!result || result.trim().length === 0) {
       console.error('❌ Python 没有返回任何内容');
       return res.status(500).json({ success: false, message: 'Python 无输出或出错' });
     }
 
     try {
-      const vector = JSON.parse(result);
-      console.log('✅ 成功获取词向量（前5维）:', vector.slice(0, 5));
-      res.json({ success: true, vector });
+      const queryVector = JSON.parse(result);
+      console.log('✅ 成功获取词向量（前5维）:', queryVector.slice(0, 5));
+
+      // 从 MongoDB 获取所有帖子向量
+      const postVectors = await PostVec.find({});
+      
+      // 计算相似度并排序
+      const similarities = postVectors
+        .filter(post => post.vector && Array.isArray(post.vector)) // 确保向量存在且格式正确
+        .map(post => ({
+          postId: post.postId.toString(), // 转换 ObjectId 为字符串
+          similarity: cosineSimilarity(queryVector, post.vector)
+        }))
+        .sort((a, b) => b.similarity - a.similarity);
+
+      // 返回前5个最相似的帖子ID
+      const top5Posts = similarities.slice(0, 5);
+      
+      res.json({ 
+        success: true, 
+        vector: queryVector,
+        similarPosts: top5Posts
+      });
     } catch (err) {
       console.error('❌ JSON 解析失败:', err);
       res.status(500).json({ success: false, message: 'JSON 解析失败' });
