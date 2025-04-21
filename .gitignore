@@ -31,3 +31,5 @@ Thumbs.db
 # 编译输出
 /dist
 /build
+
+word2vec.bin
