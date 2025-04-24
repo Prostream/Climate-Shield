@@ -1,0 +1,6 @@
+fastapi==0.110.*
+uvicorn[standard]==0.29.*
+transformers==4.40.*
+accelerate==0.29.*
+sentencepiece==0.1.99
+numpy==1.26.4          # ──⚠️ 必锁 <2，避免 ABI 冲突
