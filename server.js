@@ -11,7 +11,7 @@ const axios = require('axios');
 const app = express();
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/climateShield', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://mongodb:27017/climateShield', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -21,8 +21,6 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/climateSh
 // 中间件配置
 app.use(cors());
 app.use(express.json());
-// 静态文件托管
-app.use(express.static(path.join(__dirname, 'Client/build')));
 
 // 聊天 API 路由
 app.post('/api/chat', async (req, res) => {
@@ -90,11 +88,9 @@ app.post('/api/chat', async (req, res) => {
 });
 
 // 测试路由
-// 路由示例
-
 app.get('/', (req, res) => {
     res.send('Hello from Express!');
-  });
+});
 
 // 登录接口
 app.post('/api/login', async (req, res) => {
@@ -113,7 +109,7 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// ✅ 注册接口（保存用户到数据库）
+// 注册接口
 app.post('/api/register', async (req, res) => {
   const { username, password, email, phoneNumber, gender, birthday, address, postalCode } = req.body;
 
@@ -142,17 +138,21 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// ✅ 获取所有帖子（从 MongoDB 查询）
+// 获取所有帖子
 app.get('/api/posts', async (req, res) => {
   try {
+    console.log('收到获取帖子请求');
     const posts = await Post.find({});
+    console.log('查询到的帖子数量:', posts.length);
+    console.log('返回的帖子数据:', posts);
     res.json(posts);
   } catch (err) {
+    console.error('获取帖子失败:', err);
     res.status(500).json({ message: 'Failed to fetch posts', error: err });
   }
 });
 
-// ✅ 添加新帖子（保存到 MongoDB）
+// 添加新帖子
 app.post('/api/posts', async (req, res) => {
   const { title, content, type, tags, image, location, category } = req.body;
 
@@ -182,23 +182,25 @@ function cosineSimilarity(vec1, vec2) {
   return dotProduct / (norm1 * norm2);
 }
 
-// ✅ 搜索帖子
+// 搜索帖子
 app.get('/api/vector', async (req, res) => {
   const query = req.query.query || '';
   console.log('🟢 收到关键词:', query);
 
   // 根据操作系统选择 Python 命令
   const pythonCommand = process.platform === 'win32' ? 'python' : 'python3';
-  const python = spawn(pythonCommand, ['vector_search.py', query]);
+  const python = spawn(pythonCommand, ['/app/vector_search.py', query], {
+    cwd: '/app'  // 设置工作目录
+  });
 
   let result = '';
 
-  // ✅ 收集输出内容
+  // 收集输出内容
   python.stdout.on('data', (data) => {
     result += data.toString().trim();
   });
 
-  // ✅ 打印 Python 错误输出
+  // 打印 Python 错误输出
   python.stderr.on('data', (data) => {
     console.error('[Python stderr]:', data.toString());
   });
@@ -264,14 +266,6 @@ app.get('/api/vector', async (req, res) => {
       res.status(500).json({ success: false, message: 'JSON 解析失败' });
     }
   });
-});
-
-// ✅ 静态资源托管路径
-app.use(express.static(path.join(__dirname, 'Client/build')));
-
-// ✅ 放在最后的 catch-all，确保路径正确
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Client/build', 'index.html'));
 });
 
 // 设置服务器端口
