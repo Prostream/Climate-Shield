@@ -52,15 +52,26 @@ docker-compose down
 # Rebuild and start services
 docker-compose up -d --build
 ```
+4. clone llm-server into another folder
+  ```bash
+  #Build image
+  docker build -t my-llm-server .
 
+  #Run container (Please check if you run on CPU/GPU, edit dockerfile if necessary)
+  docker run -d --gpus all -p 8000:8000 my-llm-server
+  ```
+ 
 Service Information:
 - Frontend service runs on port 80
 - Backend service runs on port 12000
 - MongoDB runs on port 27017
+- LLM runs on port 8000
 
 Access the Application:
 - Frontend: http://localhost
 - Backend API: http://localhost:12000
+- LLM: http://localhost:8000/docs
+
 
 Local Development (without Docker)
 Start server on local (open bash from path that clone from Github)
