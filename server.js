@@ -6,6 +6,7 @@ const Post = require('./models/Post');
 const User = require('./models/User');
 const PostVec = require('./models/PostVec');
 const { spawn } = require('child_process');
+const axios = require('axios');
 
 const app = express();
 
@@ -22,6 +23,71 @@ app.use(cors());
 app.use(express.json());
 // 静态文件托管
 app.use(express.static(path.join(__dirname, 'Client/build')));
+
+// 聊天 API 路由
+app.post('/api/chat', async (req, res) => {
+  try {
+    console.log('收到聊天请求:', req.body);
+    
+    if (!req.body || !req.body.prompt) {
+      console.error('请求体格式错误:', req.body);
+      return res.status(400).json({ error: '请求体格式错误，缺少 prompt 字段' });
+    }
+
+    // 构建请求体
+    const requestBody = {
+      prompt: req.body.prompt
+    };
+
+    console.log('发送到聊天 API 的请求:', requestBody);
+
+    const response = await axios.post('https://56d8-2601-646-8f89-15a0-5515-a0a4-7504-11f.ngrok-free.app/chat', requestBody, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      timeout: 100000 // 10秒超时
+    });
+
+    console.log('聊天 API 响应:', response.data);
+    
+    if (!response.data) {
+      console.error('API 返回空响应');
+      return res.status(500).json({ error: 'API 返回空响应' });
+    }
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('Chat API 代理错误:', {
+      message: error.message,
+      code: error.code,
+      response: error.response?.data,
+      status: error.response?.status,
+      request: error.config?.data
+    });
+    
+    if (error.response) {
+      // 如果 API 返回了错误响应
+      res.status(error.response.status).json({
+        error: '聊天服务错误',
+        details: error.response.data,
+        request: error.config?.data
+      });
+    } else if (error.request) {
+      // 如果请求已发送但没有收到响应
+      res.status(504).json({
+        error: '聊天服务超时',
+        details: '无法连接到聊天服务'
+      });
+    } else {
+      // 其他错误
+      res.status(500).json({
+        error: '服务器内部错误',
+        details: error.message
+      });
+    }
+  }
+});
 
 // 测试路由
 // 路由示例
