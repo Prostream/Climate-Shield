@@ -10,7 +10,7 @@ model = KeyedVectors.load_word2vec_format("word2vec.bin", binary=True)
 print("[模型加载成功]")
 
 # ✅ 连接 MongoDB
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient("mongodb://mongodb:27017/")
 db = client["climateShield"]
 post_collection = db["posts"]
 vector_collection = db["post_vectors"]
@@ -44,5 +44,6 @@ for post in post_collection.find():
     }
     vector_collection.insert_one(vector_doc)
     count += 1
+    print(f"[进度] 已处理 {count} 条帖子")
 
 print(f"[完成] 共写入 {count} 条向量")

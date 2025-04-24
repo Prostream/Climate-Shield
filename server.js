@@ -10,7 +10,7 @@ const { spawn } = require('child_process');
 const app = express();
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/climateShield', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/climateShield', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -129,7 +129,7 @@ app.get('/api/vector', async (req, res) => {
 
   // ✅ 收集输出内容
   python.stdout.on('data', (data) => {
-    result += data.toString();
+    result += data.toString().trim();
   });
 
   // ✅ 打印 Python 错误输出
@@ -138,34 +138,60 @@ app.get('/api/vector', async (req, res) => {
   });
 
   python.on('close', async (code) => {
+    console.log('Python进程退出码:', code);
+    
     if (!result || result.trim().length === 0) {
       console.error('❌ Python 没有返回任何内容');
       return res.status(500).json({ success: false, message: 'Python 无输出或出错' });
     }
 
     try {
-      const queryVector = JSON.parse(result);
+      const response = JSON.parse(result);
+      if (response.error) {
+        console.error('❌ Python 返回错误:', response.error);
+        return res.status(500).json({ success: false, message: response.error });
+      }
+      
+      const queryVector = response.vector;
       console.log('✅ 成功获取词向量（前5维）:', queryVector.slice(0, 5));
 
       // 从 MongoDB 获取所有帖子向量
       const postVectors = await PostVec.find({});
+      console.log('✅ 从数据库获取到向量数量:', postVectors.length);
       
       // 计算相似度并排序
       const similarities = postVectors
         .filter(post => post.vector && Array.isArray(post.vector)) // 确保向量存在且格式正确
         .map(post => ({
-          postId: post.postId.toString(), // 转换 ObjectId 为字符串
+          postId: post.postId, // 直接使用ObjectId
           similarity: cosineSimilarity(queryVector, post.vector)
         }))
         .sort((a, b) => b.similarity - a.similarity);
 
+      console.log('✅ 计算得到相似度数量:', similarities.length);
+
       // 返回前5个最相似的帖子ID
       const top5Posts = similarities.slice(0, 5);
+      console.log('✅ 返回前5个相似帖子:', top5Posts);
+      
+      // 获取完整的帖子信息
+      const postIds = top5Posts.map(p => p.postId);
+      const posts = await Post.find({ _id: { $in: postIds } });
+      console.log('✅ 获取到完整帖子数量:', posts.length);
+      
+      // 将相似度信息添加到帖子中
+      const postsWithSimilarity = posts.map(post => {
+        const similarityInfo = top5Posts.find(p => p.postId.toString() === post._id.toString());
+        return {
+          ...post.toObject(),
+          similarity: similarityInfo ? similarityInfo.similarity : 0
+        };
+      });
       
       res.json({ 
         success: true, 
         vector: queryVector,
-        similarPosts: top5Posts
+        similarPosts: postsWithSimilarity
       });
     } catch (err) {
       console.error('❌ JSON 解析失败:', err);

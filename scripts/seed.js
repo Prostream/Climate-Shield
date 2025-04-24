@@ -3,7 +3,7 @@ const Post = require('../models/Post');
 const User = require('../models/User');
 const { posts, users } = require('../data');
 
-mongoose.connect('mongodb://localhost:27017/climateShield', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/climateShield', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(async () => {
