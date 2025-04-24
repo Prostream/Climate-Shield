@@ -75,7 +75,6 @@ Word2vec generate
   - Dataset download 
     - NLP with Disaster Tweets
       import kagglehub
-      # Download latest version
       path = kagglehub.dataset_download("vbmokin/nlp-with-disaster-tweets-cleaning-data")
       print("Path to dataset files:", path)
     - About the Test Data(enwik8)
