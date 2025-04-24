@@ -12,17 +12,59 @@ Features
 Tech Used
 - Fronted: React, Emotion (for styling)
 - Backend: Node.js, Express, Axios (for HTTP requests), CORS (for cross-origin requests)
+- Database: MongoDB
+- Containerization: Docker, Docker Compose
 - Other: HTML, CSS
 
 Getting Started
+
 Prerequisites
 - Node.js: Make sure Node.js in installed on your system. Download https://nodejs.org/en 
+- Docker: Install Docker Desktop from https://www.docker.com/products/docker-desktop
+- Docker Compose: Usually comes with Docker Desktop installation
 
 Clone from Github (bash)
-- Git clone https://github.com/Prostream/front_hackthon.git
+```bash
+# Clone frontend repository
+git clone https://github.com/Prostream/front_hackthon.git
 
+# Clone backend repository
+git clone https://github.com/Prostream/Climate-Shield.git
+```
+
+Docker Deployment
+1. Make sure Docker and Docker Compose are installed
+2. Run the following commands in the project root directory:
+```bash
+# Build and start all services
+docker-compose up -d
+
+# Build and start specific services
+docker-compose up -d frontend  # Start frontend only
+docker-compose up -d backend   # Start backend only
+docker-compose up -d mongodb   # Start database only
+
+# Stop all services
+docker-compose down
+
+# Rebuild and start services
+docker-compose up -d --build
+```
+
+Service Information:
+- Frontend service runs on port 80
+- Backend service runs on port 12000
+- MongoDB runs on port 27017
+
+Access the Application:
+- Frontend: http://localhost
+- Backend API: http://localhost:12000
+
+Local Development (without Docker)
 Start server on local (open bash from path that clone from Github)
-- node server.js 
+```bash
+node server.js 
+```
 
 Access
 - Open browser and go https://Localhost:12000 
