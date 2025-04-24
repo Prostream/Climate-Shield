@@ -14,6 +14,8 @@ Tech Used
 - Backend: Node.js, Express, Axios (for HTTP requests), CORS (for cross-origin requests)
 - Database: MongoDB
 - Containerization: Docker, Docker Compose
+- Word2vec: Gensim
+- LLM: microsoft/phi-1_5 
 - Other: HTML, CSS
 
 Getting Started
@@ -69,6 +71,35 @@ node server.js
 Access
 - Open browser and go https://Localhost:12000 
 
+Word2vec generate
+  - Dataset download 
+    - NLP with Disaster Tweets
+      import kagglehub
+      # Download latest version
+      path = kagglehub.dataset_download("vbmokin/nlp-with-disaster-tweets-cleaning-data")
+      print("Path to dataset files:", path)
+    - About the Test Data(enwik8)
+      from gensim.downloader import load as api_load
+      wikitext = api_load('text8')
+  - Gensim Word2vec training(Please check detail steps with Gensim_w2v_generate.ipynb)
+    from gensim.models import Word2Vec
+    model = Word2Vec(
+    sentences = combined_corpus,    
+    vector_size = 250,      
+    window = 20,       
+    sg = 1,            
+    negative = 15,
+    sample = 0.0001,     
+    min_count = 2,        
+    workers = 4,         
+    epochs = 25)
+
+Ngrok depoly
+  - Download Ngrok
+    ngrok config add-authtoken <YOUR_TOKEN>
+    ngrok http <YOUR_ADDRESS>
+
+
 Reference
 - OpenWeatherMap.org. (n.d.). Interactive weather maps - OpenWeatherMap. https://openweathermap.org/weathermap?    
   basemap=map&cities=true&layer=$%7BmapLayer%7D&lat=30&lon=0&zoom=2
@@ -76,3 +107,9 @@ Reference
 - Fire information. (n.d.). https://www.nifc.gov/fire-information
 - Earthquake Hazards Program | U.S. Geological Survey. (2024, October 15). https://www.usgs.gov/programs/earthquake-hazards
 - National Water Prediction Service - NOAA. (n.d.). https://water.weather.gov/ahps/
+- NLP with Disaster Tweets - Cleaning Data. Vitalii Mokin. Kaggle Dataset. Avail-
+able at: https://www.kaggle.com/datasets/vbmokin/nlp-with-disaster-tweets-clean
+- About the Test Data. Matt Mahoney. Available at: https://mattmahoney.net/
+dc/textdata.html
+- Word2vec embeddings Gensim https://radimrehurek.com/gensim/models/word2vec.html
+- Ngrok The flexible API gateway for instant https://ngrok.com/
