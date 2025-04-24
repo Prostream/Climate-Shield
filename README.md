@@ -24,6 +24,7 @@ Prerequisites
 - Node.js: Make sure Node.js in installed on your system. Download https://nodejs.org/en 
 - Docker: Install Docker Desktop from https://www.docker.com/products/docker-desktop
 - Docker Compose: Usually comes with Docker Desktop installation
+- Word2Vector: Download word2vectore file from google drive https://drive.google.com/file/d/1qzobcrsJlBY8tjXsZf5E1FP9p4dONHzS/view?usp=sharing
 
 Clone from Github (bash)
 ```bash
