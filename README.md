@@ -74,13 +74,18 @@ Access
 Word2vec generate
   - Dataset download 
     - NLP with Disaster Tweets
+      ```bash
       import kagglehub
       path = kagglehub.dataset_download("vbmokin/nlp-with-disaster-tweets-cleaning-data")
       print("Path to dataset files:", path)
+      ```
     - About the Test Data(enwik8)
+      ```bash
       from gensim.downloader import load as api_load
       wikitext = api_load('text8')
+      ```
   - Gensim Word2vec training(Please check detail steps with Gensim_w2v_generate.ipynb)
+    ```bash
     from gensim.models import Word2Vec
     model = Word2Vec(
     sentences = combined_corpus,    
@@ -92,11 +97,13 @@ Word2vec generate
     min_count = 2,        
     workers = 4,         
     epochs = 25)
-
+    ```
 Ngrok depoly
   - Download Ngrok
+    ```bash
     ngrok config add-authtoken <YOUR_TOKEN>
     ngrok http <YOUR_ADDRESS>
+    ```
 
 
 Reference
